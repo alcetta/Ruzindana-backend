@@ -5,11 +5,17 @@ import {
   getUserById,
   updateUser,
   updateUserAvatar,
+  createUser,
 } from '../controllers/userController.js';
 import { protect, admin } from '../middlewares/auth.js';
 import upload from '../middlewares/upload.js';
 
 const router = express.Router();
+
+router
+  .route('/')
+  .get(protect, admin, getUsers)
+  .post(protect, admin, upload.single('avatar'), createUser);
 
 router.route('/').get(protect, admin, getUsers);
 router
