@@ -114,6 +114,45 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 });
+// @desc    Create a new user
+// @route   POST /api/users
+// @access  Private/Admin
+const createUser = asyncHandler(async (req, res) => {
+  const { name, email, password, role, bio } = req.body;
+
+  const userExists = await User.findOne({ email });
+  if (userExists) {
+    res.status(400);
+    throw new Error('User already exists');
+  }
+
+  const user = new User({
+    name,
+    email,
+    password,
+    role: role || 'user',
+    bio,
+  });
+
+  if (req.file) {
+    const result = await uploadImage(req.file.path);
+    user.avatar = {
+      public_id: result.public_id,
+      url: result.secure_url,
+    };
+  }
+
+  const createdUser = await user.save();
+
+  res.status(201).json({
+    _id: createdUser._id,
+    name: createdUser.name,
+    email: createdUser.email,
+    role: createdUser.role,
+    avatar: createdUser.avatar,
+    bio: createdUser.bio,
+  });
+});
 
 export {
   getUsers,
@@ -121,4 +160,5 @@ export {
   getUserById,
   updateUser,
   updateUserAvatar,
+  createUser,
 };
