@@ -18,7 +18,7 @@ router
   .route('/')
   .get(protect, admin, getUsers)
   .post(protect, admin, upload.single('avatar'), createUser);
-   .post('/login', admin, loginUser);
+   .post('/login', userController, loginUser);
 
 router.route('/').get(protect, admin, getUsers);
 router
