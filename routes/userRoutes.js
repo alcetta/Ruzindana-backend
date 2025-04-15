@@ -12,10 +12,13 @@ import upload from '../middlewares/upload.js';
 
 const router = express.Router();
 
+
+
 router
   .route('/')
   .get(protect, admin, getUsers)
   .post(protect, admin, upload.single('avatar'), createUser);
+   .post('/login', admin, loginUser);
 
 router.route('/').get(protect, admin, getUsers);
 router
